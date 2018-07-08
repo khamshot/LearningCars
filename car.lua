@@ -1,77 +1,112 @@
-local matrix = require "matrix"
+local matrix = require "libs/matrix"
 
-local Car = {}
-Car.__index = Car
+local car = {}
 
-Car.width = 20
-Car.length = 30
-Car.speed = 1000
-Car.turnspeed = 25
-Car.sensorlen = 120
-Car.img = love.graphics.newImage("media/car.png")
+-- creating an instance with car.new() or car()
+setmetatable(car,
+  {__call = function(self,...) return self.new(...) end})
 
-function Car.new(init)
-  local self = setmetatable({}, Car)
+car.width = 20
+car.length = 30
+car.speed = 1000
+car.turnspeed = 25
+car.sensorlen = 120
+car.img = love.graphics.newImage("media/car.png")
+
+function car.new(init)
+  local self = setmetatable({}, {__index=car})
       
-  self.rot = init.rot
+  self.rot = init.rot or math.pi
   self.vec = {0,1}
   self.x = init.x or 400
   self.y = init.y or 400
-  self.fitness = 0
   self.color = init.color or {255,255,255,255}
+  self.img = init.img and love.graphics.newImage(init.img) or car.img
+  
   self.sensorL = {}
   self.sensorM = {}
   self.sensorR = {}
+  
+  self.ID = init.ID
+  self.crashed = false
+  self.fitness = 0
+  self.trailTimer = 0.25
+  self.trail = {}
+  table.insert(self.trail,{x=self.x,y=self.y})
+  
   self:update_sensors()
-  self.img = init.img and love.graphics.newImage(init.img) or Car.img
   return self
 end
 
-function Car:move(dt,out1,tbl_list)
-  self.fitness = self.fitness + (((self.speed*self.vec[1]*dt)^2 + (self.speed*self.vec[2]*dt)^2)^0.5)*out1
-  
-  if not tbl_list then
-    --not in use currently
-    self.x = self.x + self.speed*self.vec[1]*dt*(out1)
-    self.y = self.y + self.speed*self.vec[2]*dt*(out1)
-  else
-    --move all mapelements
-    for k,t in ipairs(tbl_list) do
-      for i,v in ipairs(t) do
-        if v.x ~= nil then
-          v.x = v.x - self.speed*self.vec[1]*dt*(out1)
-          v.y = v.y - self.speed*self.vec[2]*dt*(out1) end
-        if v.x1 ~= nil then
-          v.x1 = v.x1 - self.speed*self.vec[1]*dt*(out1)
-          v.y1 = v.y1 - self.speed*self.vec[2]*dt*(out1)
-          v.x2 = v.x2 - self.speed*self.vec[1]*dt*(out1)
-          v.y2 = v.y2 - self.speed*self.vec[2]*dt*(out1) end
-      end
-    end
+-- UPDATE --
+
+function car:update(dt,walls,checkpoints,factor1,factor2)
+  if not self.crashed then
+    self:move(dt,factor1)
+    self:turn(dt,factor2)
+    self:update_sensors()
+    self:doTrail(dt)
+    self:checkColWalls(walls)
+    self:checkColCheckpoints(checkpoints)
   end
 end
 
-function Car:turn(dt,out2)
-  self.rot = self.rot + self.turnspeed*dt*(out2-0.5)
+function car:move(dt,factor)
+-- moves the car forward * a factor
+  self.fitness = self.fitness + (((self.speed*self.vec[1]*dt)^2 + (self.speed*self.vec[2]*dt)^2)^0.5)*factor
+  
+  self.x = self.x + self.speed*self.vec[1]*dt*(factor)
+  self.y = self.y + self.speed*self.vec[2]*dt*(factor)
+end
+
+function car:turn(dt,factor)
+-- changes the cars orientation * a factor
+  self.rot = self.rot + self.turnspeed*dt*(factor-0.5)
   self.rot = self.rot % (2*math.pi)
   
   self.vec[1] = math.sin(-self.rot)
   self.vec[2] = math.cos(self.rot)
 end
 
-function Car:check_col(Walls)
-  --checks for collision with walls
+function car:doTrail(dt)
+-- adds a point to the trail table every trailTimer
+  self.trailTimer = self.trailTimer - dt
+  if self.trailTimer <= 0 then
+    table.insert(self.trail,{x=self.x,y=self.y})
+    self.trailTimer = 0.25
+  end
+end
+  
+function car:checkColWalls(walls)
+--checks for collision with walls
   local collision = false
   local tempboolL,tempboolR = false,false
-  for i,v in ipairs(Walls) do
-    tempboolL = matrix.vector_intersection({self.x,self.y},self.sensorL[1],{v.x1,v.y1},{v.x2,v.y2})
-    tempboolR = matrix.vector_intersection({self.x,self.y},self.sensorR[1],{v.x1,v.y1},{v.x2,v.y2})
+  for i,v in ipairs(walls) do
+    tempboolL = matrix.vector_intersection({self.x,self.y},self.sensorL[1],{v.x,v.y},{v.x2,v.y2})
+    tempboolR = matrix.vector_intersection({self.x,self.y},self.sensorR[1],{v.x,v.y},{v.x2,v.y2})
     collision = tempboolL or tempboolR or collision
   end
-  return collision
+  if collision then
+    table.insert(self.trail,{x=self.x,y=self.y})
+    self.crashed = true
+  end
 end
 
-function Car:update_sensors()
+function car:checkColCheckpoints(checkpoints)
+-- checks if car collides with checkpoint and gives fitness
+  for i,v in ipairs(checkpoints) do
+    tempboolL = matrix.vector_intersection({self.x,self.y},self.sensorL[1],{v.x,v.y},{v.x2,v.y2})
+    tempboolR = matrix.vector_intersection({self.x,self.y},self.sensorR[1],{v.x,v.y},{v.x2,v.y2})
+    if tempboolL or tempboolR then
+      if not v.checkID(self.ID) then
+        v.addID(self.ID)
+        self.fitness = self.fitness + v.reward
+      end
+    end
+  end  
+end
+
+function car:update_sensors()
   --refreshes the positions of the sensors
   --left sensor
   self.sensorL[1] = {self.x-math.sin(self.rot)*self.length - math.cos(self.rot-math.pi)*self.width/2,
@@ -92,7 +127,7 @@ function Car:update_sensors()
     self.y+math.cos(self.rot)*self.length+math.cos(self.rot+math.pi/4)*self.sensorlen + math.sin(self.rot+math.pi)*self.width/2}  
 end
 
-function Car:get_sensor_values(Walls)
+function car:get_sensor_values(Walls)
   --returns the sensor values
   local l,m,r = self.sensorlen,self.sensorlen,self.sensorlen
   local tempbool,tempXY 
@@ -121,24 +156,40 @@ function Car:get_sensor_values(Walls)
   return {{1-l/self.sensorlen},{1-m/self.sensorlen},{1-r/self.sensorlen}}
 end
 
------------------------
+--- DRAW ---
 
-function Car:update(dt,out1,out2,tbl_list)
-  --tbl_list = list of all mapelemtents to move
-  self:move(dt,out1,tbl_list)
-  self:turn(dt,out2)
-  self:update_sensors()
-end
-
-function Car:draw(draw_sensors)
+function car:draw(focus)
   love.graphics.setColor(self.color)
-  love.graphics.draw(self.img,self.x,self.y,self.rot,1,1,self.width/2,0)
-  love.graphics.draw(self.img,self.x,self.y,self.rot,1,1,self.width/2,0)
-  if draw_sensors then
-    love.graphics.line(self.sensorL[1][1],self.sensorL[1][2],self.sensorL[2][1],self.sensorL[2][2])
-    love.graphics.line(self.sensorM[1][1],self.sensorM[1][2],self.sensorM[2][1],self.sensorM[2][2])
-    love.graphics.line(self.sensorR[1][1],self.sensorR[1][2],self.sensorR[2][1],self.sensorR[2][2])
+  love.graphics.draw(
+    self.img,
+    self.x * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
+    self.y * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y,
+    self.rot,settings.scale.x,settings.scale.y,self.width/2,0)
+  if not self.crashed then
+    love.graphics.line(
+      self.sensorL[1][1] * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
+      self.sensorL[1][2] * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y,
+      self.sensorL[2][1] * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
+      self.sensorL[2][2] * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y)
+    love.graphics.line(
+      self.sensorM[1][1] * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
+      self.sensorM[1][2] * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y,
+      self.sensorM[2][1] * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
+      self.sensorM[2][2] * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y)
+    love.graphics.line(
+      self.sensorR[1][1] * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
+      self.sensorR[1][2] * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y,
+      self.sensorR[2][1] * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
+      self.sensorR[2][2] * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y)
+  end
+  
+  for i=1,(#self.trail-1) do
+    love.graphics.line(
+      self.trail[i].x * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
+      self.trail[i].y * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y,
+      self.trail[i+1].x * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
+      self.trail[i+1].y * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y)
   end
 end
 
-return Car
+return car

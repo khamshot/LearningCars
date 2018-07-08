@@ -1,4 +1,4 @@
-local matlib = require "matrix"
+local matlib = require "libs/matrix"
 
 local network = {}
 network.__index = network
