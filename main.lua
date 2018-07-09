@@ -1,24 +1,28 @@
 require "settings"
 require "libs/helper"
-require "world"
+require "world/world"
 
-local car = require "car"
-local wall = require "wall"
+local car = require "world/car"
+local wall = require "world/wall"
 
 function love.load()
-  settings.setScreenResolution(960,540,{resizable=false,fullscreen=false})
-  --settings.setScreenResolution(1600,1000,{resizable=false,fullscreen=false})
+  math.randomseed(os.time())
+  love.graphics.setBackgroundColor(11,11,11)
+  --settings.setScreenResolution(960,540,{resizable=false,fullscreen=false})
+  settings.setScreenResolution(1600,1000,{resizable=false,fullscreen=false})
   --settings.setScreenResolution(1920,1080,{resizable=false,fullscreen=true})
   
-  world:setCars(
-    {car({color={11,211,0}}),
-     car({x=100,y=100,color={11,211,222}}),
-     car({x=-100,y=400,color={11,11,222}})})
-  world:addObject(wall({x=500,y=200,x2=200,y2=300}),"walls")
-  world:addObject(wall({x=-50,y=-200,x2=200,y2=-200}),"walls")
+  world:generateCars(10)
+  world:generateNetworks(10,40)
+ 
+  local map01 = require "maps/map01"
+  world:setWalls(map01.walls)
+  world:setCheckpoints(map01.checkpoints)
+  
 end
 
 function love.update(dt)
+  if dt > 0.05 then dt = 0.05 end
   world:update(dt)
 end
 

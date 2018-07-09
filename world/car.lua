@@ -8,20 +8,24 @@ setmetatable(car,
 
 car.width = 20
 car.length = 30
-car.speed = 1000
-car.turnspeed = 25
+car.speed = 500
+car.turnspeed = 15
 car.sensorlen = 120
-car.img = love.graphics.newImage("media/car.png")
+car.img = {
+  love.graphics.newImage("media/car1.png"),
+  love.graphics.newImage("media/car2.png"),
+  love.graphics.newImage("media/car3.png"),
+  love.graphics.newImage("media/car4.png")}
 
 function car.new(init)
   local self = setmetatable({}, {__index=car})
       
   self.rot = init.rot or math.pi
   self.vec = {0,1}
-  self.x = init.x or 400
-  self.y = init.y or 400
+  self.x = init.x or 1500
+  self.y = init.y or 580
   self.color = init.color or {255,255,255,255}
-  self.img = init.img and love.graphics.newImage(init.img) or car.img
+  self.img = init.img and love.graphics.newImage(init.img) or car.img[math.random(4)]
   
   self.sensorL = {}
   self.sensorM = {}
@@ -34,7 +38,7 @@ function car.new(init)
   self.trail = {}
   table.insert(self.trail,{x=self.x,y=self.y})
   
-  self:update_sensors()
+  self:updateSensors()
   return self
 end
 
@@ -44,8 +48,8 @@ function car:update(dt,walls,checkpoints,factor1,factor2)
   if not self.crashed then
     self:move(dt,factor1)
     self:turn(dt,factor2)
-    self:update_sensors()
-    self:doTrail(dt)
+    self:updateSensors()
+    self:updateTrail(dt)
     self:checkColWalls(walls)
     self:checkColCheckpoints(checkpoints)
   end
@@ -68,7 +72,7 @@ function car:turn(dt,factor)
   self.vec[2] = math.cos(self.rot)
 end
 
-function car:doTrail(dt)
+function car:updateTrail(dt)
 -- adds a point to the trail table every trailTimer
   self.trailTimer = self.trailTimer - dt
   if self.trailTimer <= 0 then
@@ -98,15 +102,21 @@ function car:checkColCheckpoints(checkpoints)
     tempboolL = matrix.vector_intersection({self.x,self.y},self.sensorL[1],{v.x,v.y},{v.x2,v.y2})
     tempboolR = matrix.vector_intersection({self.x,self.y},self.sensorR[1],{v.x,v.y},{v.x2,v.y2})
     if tempboolL or tempboolR then
-      if not v.checkID(self.ID) then
-        v.addID(self.ID)
+      if not v:checkID(self.ID) then
+        v:addID(self.ID)
         self.fitness = self.fitness + v.reward
       end
     end
   end  
 end
 
-function car:update_sensors()
+function car:clearTrail()
+  for i,v in ipairs(self.trail) do
+    self.trail[i] = nil
+  end
+end
+
+function car:updateSensors()
   --refreshes the positions of the sensors
   --left sensor
   self.sensorL[1] = {self.x-math.sin(self.rot)*self.length - math.cos(self.rot-math.pi)*self.width/2,
@@ -127,26 +137,26 @@ function car:update_sensors()
     self.y+math.cos(self.rot)*self.length+math.cos(self.rot+math.pi/4)*self.sensorlen + math.sin(self.rot+math.pi)*self.width/2}  
 end
 
-function car:get_sensor_values(Walls)
+function car:getSensorValues(Walls)
   --returns the sensor values
   local l,m,r = self.sensorlen,self.sensorlen,self.sensorlen
   local tempbool,tempXY 
   
   for i,v in ipairs(Walls) do
     --left sensor
-    tempbool, tempXY = matrix.vector_intersection(self.sensorL[1],self.sensorL[2],{v.x1,v.y1},{v.x2,v.y2})
+    tempbool, tempXY = matrix.vector_intersection(self.sensorL[1],self.sensorL[2],{v.x,v.y},{v.x2,v.y2})
     if type(tempXY) == "table" then
       tempXY = math.sqrt((self.sensorL[1][1]-tempXY[1])^2+(self.sensorL[1][2]-tempXY[2])^2)
       if tempXY < l then l = tempXY end
     end
     --middle sensor
-    tempbool, tempXY = matrix.vector_intersection(self.sensorM[1],self.sensorM[2],{v.x1,v.y1},{v.x2,v.y2})
+    tempbool, tempXY = matrix.vector_intersection(self.sensorM[1],self.sensorM[2],{v.x,v.y},{v.x2,v.y2})
     if type(tempXY) == "table" then
       tempXY = math.sqrt((self.sensorM[1][1]-tempXY[1])^2+(self.sensorM[1][2]-tempXY[2])^2)
       if tempXY < m then m = tempXY end
     end
     --right sensor
-    tempbool, tempXY = matrix.vector_intersection(self.sensorR[1],self.sensorR[2],{v.x1,v.y1},{v.x2,v.y2})
+    tempbool, tempXY = matrix.vector_intersection(self.sensorR[1],self.sensorR[2],{v.x,v.y},{v.x2,v.y2})
     if type(tempXY) == "table" then
       tempXY = math.sqrt((self.sensorR[1][1]-tempXY[1])^2+(self.sensorR[1][2]-tempXY[2])^2)
       if tempXY < r then r = tempXY end

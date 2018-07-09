@@ -1,6 +1,5 @@
 local wall = {}
 
-
 setmetatable(wall,
   {__call = function(self,...) return self.new(...) end})
 
