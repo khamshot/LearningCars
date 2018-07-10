@@ -110,7 +110,14 @@ function car:checkColCheckpoints(checkpoints)
   end  
 end
 
-function car:clearTrail()
+function car:resetCar(ref)
+  self.crashed = false
+  self.x = ref.x
+  self.y = ref.y
+  self.rot = ref.rot
+  self.vec = {ref.vec[1],ref.vec[2]}
+  self.fitness = 0
+  self.trailTimer = 0
   for i,v in ipairs(self.trail) do
     self.trail[i] = nil
   end

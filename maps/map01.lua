@@ -30,7 +30,4 @@ table.insert(map01.walls,wall({x=250,y=990,x2=1300,y2=950}))
 table.insert(map01.walls,wall({x=300,y=850,x2=1300,y2=900}))
 table.insert(map01.walls,wall({x=1300,y=950,x2=1300,y2=900}))
 
-table.insert(map01.checkpoints,checkpoint({x=0,y=0,x2=1000,y2=1000,color={0,255,255,255}}))
-table.insert(map01.checkpoints,checkpoint({x=1000,y=0,x2=0,y2=1000,color={0,255,255,255}}))
-
 return map01

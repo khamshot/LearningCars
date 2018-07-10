@@ -1095,20 +1095,6 @@ matrix.vector_intersection = function( a, b, c, d )
         return false
 end
 
-function matrix.mutate_matrix(matrix)
-  local randweight = {math.floor(math.random()*#matrix+1),math.floor(math.random()*#matrix[1]+1)}
-  local random1 = math.random()*4
-  if random1 > 3 then
-    matrix[randweight[1]][randweight[2]] = math.random()*2 - 1
-  elseif random1 > 2 then
-    matrix[randweight[1]][randweight[2]] = matrix[randweight[1]][randweight[2]] * (math.random()+0.5)
-  elseif random1 > 1 then
-    matrix[randweight[1]][randweight[2]] = matrix[randweight[1]][randweight[2]] + (math.random()*2-1)
-  else
-    matrix[randweight[1]][randweight[2]] = - matrix[randweight[1]][randweight[2]]
-  end
-end
-
 --////////////////////////--
 --// METATABLE HANDLING //--
 --////////////////////////--

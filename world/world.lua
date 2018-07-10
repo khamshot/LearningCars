@@ -3,8 +3,8 @@ world = {
   cars = {},
   networks = {},
   walls = {},
-  checkpoints = {}
-  }
+  checkpoints = {},
+  generation = 1}
 
 function world:setCars(cars)
 -- defines the cars // how many 
@@ -37,7 +37,7 @@ end
 
 function world:generateNetworks(count,hiddenNodeCount)
 -- generate a number of neural networks with set hiddenNotes
-  local network = require "world/neuralNetwork"
+  local network = require "world/neuralnetwork"
   local networksTemp = {}
   for i = 1, count do
     table.insert(networksTemp,network({inodes=3,hnodes=hiddenNodeCount,onodes=2}))
@@ -66,8 +66,8 @@ function world:update(dt)
   self:updFocus()
   if self:checkAllCrashed() then
     self:reset()
+    self:nextGen()
   end
-  print(self.focus.fitness)
 end
 
 function world:moveCars(dt)
@@ -107,13 +107,8 @@ end
 function world:reset()
 -- resets cars and checkpoints
   for i,v in ipairs(self.cars) do
-    v.crashed = false
-    v.x = self.cars.ref.x
-    v.y = self.cars.ref.y
-    v.rot = self.cars.ref.rot
-    v.vec = {self.cars.ref.vec[1],self.cars.ref.vec[2]}
-    v.fitness = 0
-    v:clearTrail()
+    self.networks[i].fitness = v.fitness
+    v:resetCar(self.cars.ref)
   end
   for i,v in ipairs(self.checkpoints) do
     v:clearIDs()
@@ -122,7 +117,27 @@ function world:reset()
   self.setFocus(self.cars[1])
 end
 
-
+function world:nextGen()
+-- new generation -> mutate networks
+  self.generation = self.generation + 1
+  local oldNetworks = helper.copyNetworks(self.networks)
+  local fittest = helper.findFittest(oldNetworks)
+  oldNetworks[fittest].fitness = 0
+  
+  -- for the best network, generate 2 mutated and 1 unmutated TODO
+  self.networks[1] = helper.copyNetwork(oldNetworks[fittest])
+  self.networks[2] = helper.mutateNetwork(oldNetworks[fittest],oldNetworks)
+  self.networks[3] = helper.mutateNetwork(oldNetworks[fittest],oldNetworks)
+  
+  -- for the rest, random mutations
+  for i = 2, #oldNetworks/3 do
+  fittest = helper.findFittest(oldNetworks)
+  self.networks[i*3-2] = helper.mutateNetwork(oldNetworks[fittest],oldNetworks)
+  self.networks[i*3-1] = helper.mutateNetwork(oldNetworks[fittest],oldNetworks)
+  self.networks[i*3] = helper.mutateNetwork(oldNetworks[fittest],oldNetworks)
+  oldNetworks[fittest].fitness = 0
+  end
+end
 --DRAW--
 
 function world:draw()
