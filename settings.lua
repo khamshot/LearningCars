@@ -1,5 +1,5 @@
 settings = {
-  scale = 1,
+  scale = {},
   screenW = 0,
   screenH = 0,
   defaultW = 1920,

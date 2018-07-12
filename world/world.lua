@@ -82,7 +82,7 @@ function world:updFocus()
 -- puts the fittest car into focus
   local key , value = 1, 0
   for i,v in ipairs(self.cars) do
-    if v.fitness > value then
+    if (v.fitness > value) and not v.crashed then
       key = i
       value = v.fitness
     end
@@ -145,6 +145,7 @@ function world:draw()
  self:drawWalls()
  self:drawCheckpoints()
  self:drawCars()
+ love.graphics.print("fitness: " .. self.focus.fitness,50,50,0,2,2)
 end
 
 function world:drawCars()

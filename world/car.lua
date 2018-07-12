@@ -31,12 +31,14 @@ function car.new(init)
   self.sensorM = {}
   self.sensorR = {}
   
-  self.ID = init.ID
+  self.ID = init.ID -- for checkpoints
   self.crashed = false
-  self.fitness = 0
   self.trailTimer = 0.25
   self.trail = {}
   table.insert(self.trail,{x=self.x,y=self.y})
+  
+  self.fitness = 0
+  self.fitnessTimer = 0 -- reset this timer everytime a checkpoint was reached
   
   self:updateSensors()
   return self
@@ -52,6 +54,11 @@ function car:update(dt,walls,checkpoints,factor1,factor2)
     self:updateTrail(dt)
     self:checkColWalls(walls)
     self:checkColCheckpoints(checkpoints)
+    self.fitnessTimer = self.fitnessTimer + dt
+    if self.fitnessTimer > 5 then
+      self.crashed = true 
+      table.insert(self.trail,{x=self.x,y=self.y})
+    end
   end
 end
 
@@ -97,14 +104,15 @@ function car:checkColWalls(walls)
 end
 
 function car:checkColCheckpoints(checkpoints)
--- checks if car collides with checkpoint and gives fitness
+-- checks if car collides with checkpoint and rewards fitness
   for i,v in ipairs(checkpoints) do
     tempboolL = matrix.vector_intersection({self.x,self.y},self.sensorL[1],{v.x,v.y},{v.x2,v.y2})
     tempboolR = matrix.vector_intersection({self.x,self.y},self.sensorR[1],{v.x,v.y},{v.x2,v.y2})
     if tempboolL or tempboolR then
       if not v:checkID(self.ID) then
         v:addID(self.ID)
-        self.fitness = self.fitness + v.reward
+        self.fitness = self.fitness + math.min(v.reward,v.reward/self.fitnessTimer)
+        self.fitnessTimer = 0
       end
     end
   end  
@@ -117,6 +125,7 @@ function car:resetCar(ref)
   self.rot = ref.rot
   self.vec = {ref.vec[1],ref.vec[2]}
   self.fitness = 0
+  self.fitnessTimer = 0
   self.trailTimer = 0
   for i,v in ipairs(self.trail) do
     self.trail[i] = nil
@@ -182,6 +191,14 @@ function car:draw(focus)
     self.x * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
     self.y * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y,
     self.rot,settings.scale.x,settings.scale.y,self.width/2,0)
+  
+  self:drawSensors(focus)
+  self:drawTrails(focus)
+end
+
+function car:drawSensors(focus)
+  if not gamemode.showSensors then
+    return end
   if not self.crashed then
     love.graphics.line(
       self.sensorL[1][1] * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
@@ -199,7 +216,11 @@ function car:draw(focus)
       self.sensorR[2][1] * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
       self.sensorR[2][2] * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y)
   end
-  
+end
+
+function car:drawTrails(focus)
+  if not gamemode.showTrails then
+    return end
   for i=1,(#self.trail-1) do
     love.graphics.line(
       self.trail[i].x * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
