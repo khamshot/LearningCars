@@ -23,8 +23,8 @@ function checkpoint:addID(ID)
 end
 
 function checkpoint:clearIDs()
-  for i,v in ipairs(self.ignoreID) do 
-    self.ignoreID[i] = nil 
+  for k,v in pairs(self.ignoreID) do 
+    self.ignoreID[k] = nil 
   end
 end
 
