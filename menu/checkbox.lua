@@ -18,7 +18,7 @@ function checkbox.new(init)
   self.value = init.value or false 
   checkbox.color = init.color or {255,255,255,255}
   
-  self.exec = init.exec or function() end
+  self.exec = init.exec
   
   return self  
 end
@@ -32,7 +32,7 @@ function checkbox:update(mouseX,mouseY)
   then
     self.value = not self.value
     if type(self.exec) == "function" then
-      self.exec()
+      self.exec(self)
     end
   end
 end

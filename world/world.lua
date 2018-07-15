@@ -65,6 +65,7 @@ end
 function world:update(dt)
   self:moveCars(dt)
   self:updFocus()
+  self:updateUI(-1,-1)
   if self:checkAllCrashed() then
     self:reset()
     self:nextGen()

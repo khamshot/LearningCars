@@ -4,7 +4,7 @@ settings = {
   screenH = 0,
   defaultW = 1920,
   defaultH = 1080,
-  defaultFontsize = 50,
+  defaultFontsize = 45,
   keys = {skip="s"}}
 
 function settings.setScreenResolution(width,height,flags)
@@ -21,7 +21,7 @@ function settings.setScreenResolution(width,height,flags)
     y = settings.screenH/settings.defaultH}
   
   love.graphics.setDefaultFilter("nearest","nearest")
-  love.graphics.setNewFont("media/Saiyan-Sans.ttf",settings.defaultFontsize * settings.screenW/settings.defaultW)
+  love.graphics.setNewFont("media/Shermlock.ttf",settings.defaultFontsize * settings.screenW/settings.defaultW)
 end
 
 function settings.setKey(bind,key)  
