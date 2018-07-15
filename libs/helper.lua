@@ -2,6 +2,14 @@ local network = require "world/neuralnetwork"
 
 helper = {}
 
+function helper.checkCol(x1,y1,w1,h1,x2,y2,w2,h2)
+-- rectangle collision check
+  local x1w1, y1h1, x2w2, y2h2 = x1 + w1, y1 + h1, x2 + w2, y2 + h2
+	if (x1 < x2w2 and x1w1 > x2 and y1 < y2h2 and y1h1 > y2) then 
+		return true end
+  return false
+end
+
 function helper.randomColor()
   return {math.random(255),math.random(255),math.random(255),255}
 end
@@ -53,21 +61,16 @@ function helper.findFittest(networks)
   return genome
 end
 
-function helper.mutateNetwork(netwrk,netwrkPool)
+function helper.mutateNetwork(netwrk)
   --mutates  given network
   local mutation = helper.copyNetwork(netwrk)
-  
-  -- either randomly mutate connections or fuse with another network from the pool
-  if math.random(3) then -- TODO > 3
-    for i = 1, math.random(math.floor(netwrk.hnodes/2)) do
-      if math.random(2) == 1 then
-        helper.mutateMatrix(mutation.wih)
-      else
-        helper.mutateMatrix(mutation.who)
-      end
+
+  for i = 1, math.random(math.floor(netwrk.hnodes/2)) do
+    if math.random(2) == 1 then
+      helper.mutateMatrix(mutation.wih)
+    else
+      helper.mutateMatrix(mutation.who)
     end
-  else
-    
   end
   
   return mutation

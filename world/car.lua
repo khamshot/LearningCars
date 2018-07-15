@@ -1,9 +1,6 @@
 local matrix = require "libs/matrix"
 
-local car = {}
-
--- creating an instance with car.new() or car()
-setmetatable(car,
+local car = setmetatable({},
   {__call = function(self,...) return self.new(...) end})
 
 car.width = 20
@@ -11,7 +8,7 @@ car.length = 30
 car.speed = 500
 car.turnspeed = 15
 car.sensorlen = 120
-car.img = {
+car.imgs = {
   love.graphics.newImage("media/car1.png"),
   love.graphics.newImage("media/car2.png"),
   love.graphics.newImage("media/car3.png"),
@@ -21,11 +18,11 @@ function car.new(init)
   local self = setmetatable({}, {__index=car})
       
   self.rot = init.rot or math.pi
-  self.vec = {0,1}
+  self.vec = {1,0}
   self.x = init.x or 1500
   self.y = init.y or 580
   self.color = init.color or {255,255,255,255}
-  self.img = init.img and love.graphics.newImage(init.img) or car.img[math.random(4)]
+  self.img = init.img or math.random(4)
   
   self.sensorL = {}
   self.sensorM = {}
@@ -84,7 +81,7 @@ function car:updateTrail(dt)
   self.trailTimer = self.trailTimer - dt
   if self.trailTimer <= 0 then
     table.insert(self.trail,{x=self.x,y=self.y})
-    self.trailTimer = 0.25
+    self.trailTimer = gamemode.trailTimer
   end
 end
   
@@ -187,7 +184,7 @@ end
 function car:draw(focus)
   love.graphics.setColor(self.color)
   love.graphics.draw(
-    self.img,
+    self.imgs[self.img],
     self.x * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
     self.y * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y,
     self.rot,settings.scale.x,settings.scale.y,self.width/2,0)

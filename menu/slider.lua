@@ -1,22 +1,28 @@
---local physMgt = require "physMgt";
+local slider = {}
 
-function slider_new(p_attr)
-  local slider = {};
-  slider.x = p_attr.x or 0;
-  slider.y = p_attr.y or 0;
-  slider.width = p_attr.width or love.graphics.getWidth();
-  slider.height = p_attr.height or love.graphics.getHeight();
-  slider.color = p_attr.color or {255,255,255,255}
-  if p_attr.img then slider.img = love.graphics.newImage("media/img/" .. p_attr.img);end;
-  slider.sliderScaling = p_attr.sliderScaling or 1;
-  if p_attr.sliderImg then slider.sliderImg = love.graphics.newImage("media/img/" .. p_attr.sliderImg);end;
+setmetatable(slider,{__call = function(self,... } return self.new(...) end)
+
+slider.img = {
+  }
+
+function slider.new(init)
+  local self = setmetatable({},{__index = slider})
+  
+  self.x = init.x or 50
+  self.y = init.y or 50
+  self.width = init.width
+  self.height = init.height
+  self.color = init.color or {255,255,255,255}
+  self.img then slider.img = love.graphics.newImage("media/img/" .. init.img) end
+  slider.sliderScaling = init.sliderScaling or 1;
+  if init.sliderImg then slider.sliderImg = love.graphics.newImage("media/img/" .. init.sliderImg);end;
   slider.min = slider.x ;
   slider.max = slider.x + slider.width - slider.sliderImg:getWidth()*slider.sliderScaling/2;
   slider.sliderX = slider.max;
   slider.sliderY = slider.y + slider.height/2 - slider.sliderImg:getHeight()*slider.sliderScaling/2;
   slider.sliderWidth = slider.sliderImg:getWidth() * slider.sliderScaling;
   slider.sliderHeight = slider.sliderImg:getHeight() * slider.sliderScaling;
-  slider.value = p_attr.value or 1;
+  slider.value = init.value or 1;
 
   function slider:drawFrame()
     --draws the slider
@@ -53,33 +59,4 @@ function slider_new(p_attr)
   end;
   
   return slider;
-end;
-
----- ALL SLIDERS ----
-
-local slider = {};
-
-function slider:new(p_attr)
-  table.insert(self,slider_new(p_attr));
-end;
-
-function slider:clear()
-  while self[1] do
-    table.remove(self,1);
-  end;
-end;
-
-function slider:update(dt)
-  for i,v in ipairs(self) do
-    v:mouseInteract()
-  end;
-end;
-
-function slider:draw()
-  for i,v in ipairs(self) do
-    v:drawFrame();
-    v:drawSlider();
-  end;
-end;
-
-return slider;
+end

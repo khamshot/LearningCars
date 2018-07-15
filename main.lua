@@ -3,14 +3,12 @@ require "settings"
 require "gamemode"
 require "world/world"
 
-local car = require "world/car"
-local wall = require "world/wall"
-
 function love.load()
   math.randomseed(os.time())
+  
   love.graphics.setBackgroundColor(11,11,11)
-  --settings.setScreenResolution(960,540,{resizable=false,fullscreen=false})
-  settings.setScreenResolution(1600,1000,{resizable=false,fullscreen=false})
+  settings.setScreenResolution(960,540,{resizable=false,fullscreen=false})
+  --settings.setScreenResolution(1600,1000,{resizable=false,fullscreen=false})
   --settings.setScreenResolution(1920,1080,{resizable=false,fullscreen=true})
   
   world:generateCars(9)
@@ -23,15 +21,28 @@ end
 
 function love.update(dt)
   if dt > 0.05 then dt = 0.05 end
-  world:update(dt)
+  if gamemode.world.update then
+    world:update(dt) 
+  end
 end
 
 function love.draw()
-  world:draw()
+  if gamemode.world.draw then
+    world:draw() 
+  end
 end
 
 function love.keypressed(key)
   if key == "escape" then
     love.event.quit()
+  end
+end
+
+function love.mousepressed(x,y,button)
+  if not button == 1 then
+    return 0
+  end
+  if gamemode.world.update then
+    world:updateUI(x,y)
   end
 end

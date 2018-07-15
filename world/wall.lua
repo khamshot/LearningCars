@@ -1,6 +1,4 @@
-local wall = {}
-
-setmetatable(wall,
+local wall = setmetatable({},
   {__call = function(self,...) return self.new(...) end})
 
 function wall.new(init)

@@ -1,6 +1,4 @@
-local checkpoint = {}
-
-setmetatable(checkpoint,
+local checkpoint = setmetatable({},
   {__call = function(self,...) return self.new(...) end})
 
 function checkpoint.new(init)

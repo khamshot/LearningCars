@@ -8,5 +8,13 @@ gamemode.menu = {
   update = true,
   draw = true}
 
+function gamemode.setmode(worldUpdate,worldDraw,menuUpdate,menuDraw)
+  gamemode.world.update = worldUpdate
+  gamemode.world.draw = worldDraw
+  gamemode.menu.update = menuUpdate
+  gamemode.menu.draw = menuDraw
+end
+
 gamemode.showTrails = true
-gamemode.showSensors = false
+gamemode.trailTimer = 0.25
+gamemode.showSensors = true

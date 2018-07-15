@@ -4,6 +4,7 @@ world = {
   networks = {},
   walls = {},
   checkpoints = {},
+  ui = require "menus/ingameUI",
   generation = 1}
 
 function world:setCars(cars)
@@ -70,6 +71,12 @@ function world:update(dt)
   end
 end
 
+function world:updateUI(mouseX,mouseY)
+  for i,v in ipairs(self.ui) do
+    v:update(mouseX,mouseY)
+  end
+end
+
 function world:moveCars(dt)
   for i,v in ipairs(self.cars) do
     local sensorValues = v:getSensorValues(self.walls)
@@ -126,15 +133,15 @@ function world:nextGen()
   
   -- for the best network, generate 2 mutated and 1 unmutated TODO
   self.networks[1] = helper.copyNetwork(oldNetworks[fittest])
-  self.networks[2] = helper.mutateNetwork(oldNetworks[fittest],oldNetworks)
-  self.networks[3] = helper.mutateNetwork(oldNetworks[fittest],oldNetworks)
+  self.networks[2] = helper.mutateNetwork(oldNetworks[fittest])
+  self.networks[3] = helper.mutateNetwork(oldNetworks[fittest])
   
   -- for the rest, random mutations
   for i = 2, #oldNetworks/3 do
   fittest = helper.findFittest(oldNetworks)
-  self.networks[i*3-2] = helper.mutateNetwork(oldNetworks[fittest],oldNetworks)
-  self.networks[i*3-1] = helper.mutateNetwork(oldNetworks[fittest],oldNetworks)
-  self.networks[i*3] = helper.mutateNetwork(oldNetworks[fittest],oldNetworks)
+  self.networks[i*3-2] = helper.mutateNetwork(oldNetworks[fittest])
+  self.networks[i*3-1] = helper.mutateNetwork(oldNetworks[fittest])
+  self.networks[i*3] = helper.mutateNetwork(oldNetworks[fittest])
   oldNetworks[fittest].fitness = 0
   end
 end
@@ -145,7 +152,7 @@ function world:draw()
  self:drawWalls()
  self:drawCheckpoints()
  self:drawCars()
- love.graphics.print("fitness: " .. self.focus.fitness,50,50,0,2,2)
+ self:drawUI()
 end
 
 function world:drawCars()
@@ -160,8 +167,14 @@ function world:drawWalls()
   end
 end
 
-function world: drawCheckpoints()
-for i,v in ipairs(self.checkpoints) do
+function world:drawCheckpoints()
+  for i,v in ipairs(self.checkpoints) do
     v:draw(self.focus)
   end
 end  
+
+function world:drawUI()
+  for i,v in ipairs(self.ui) do
+    v:draw()
+  end
+end
