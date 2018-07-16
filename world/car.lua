@@ -7,7 +7,7 @@ car.width = 20
 car.length = 30
 car.speed = 500
 car.turnspeed = 15
-car.sensorlen = 120
+car.sensorlen = 200
 car.imgs = {
   love.graphics.newImage("media/car1.png"),
   love.graphics.newImage("media/car2.png"),
@@ -151,7 +151,7 @@ function car:updateSensors()
 end
 
 function car:getSensorValues(Walls)
-  --returns the sensor values
+-- returns the sensor values
   local l,m,r = self.sensorlen,self.sensorlen,self.sensorlen
   local tempbool,tempXY 
   

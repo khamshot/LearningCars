@@ -41,7 +41,10 @@ table.insert(map01.walls,wall({x=2200,y=1000,x2=2600,y2=800}))
 table.insert(map01.walls,wall({x=2600,y=0,x2=4000,y2=0}))
 table.insert(map01.checkpoints,checkpoint({x=3600,y=0,x2=3600,y2=100}))
 
-table.insert(map01.walls,wall({x=4300,y=200,x2=4400,y2=-500}))
-table.insert(map01.checkpoints,checkpoint({x=4400,y=-500,x2=4200,y2=-500}))
-
+table.insert(map01.checkpoints,checkpoint({x=4300,y=0,x2=4300,y2=100}))
+table.insert(map01.checkpoints,checkpoint({x=4500,y=100,x2=4500,y2=200}))
+table.insert(map01.checkpoints,checkpoint({x=4700,y=200,x2=4700,y2=300}))
+table.insert(map01.checkpoints,checkpoint({x=4900,y=200,x2=4900,y2=300}))
+table.insert(map01.checkpoints,checkpoint({x=5100,y=100,x2=5100,y2=200}))
+table.insert(map01.checkpoints,checkpoint({x=5300,y=0,x2=5300,y2=100}))
 return map01

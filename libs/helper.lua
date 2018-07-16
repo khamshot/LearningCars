@@ -11,7 +11,7 @@ function helper.checkCol(x1,y1,w1,h1,x2,y2,w2,h2)
 end
 
 function helper.randomColor()
-  return {math.random(255),math.random(255),math.random(255),255}
+  return {math.random(20,255),math.random(20,255),math.random(20,255),255}
 end
 
 function helper.deepcopy(orig)

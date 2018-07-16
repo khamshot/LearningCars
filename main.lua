@@ -20,7 +20,7 @@ function love.load()
 end
 
 function love.update(dt)
-  if dt > 0.05 then dt = 0.05 end
+  if dt > 0.02 then dt = 0.001 end
   if gamemode.world.update then
     world:update(dt) 
   end
