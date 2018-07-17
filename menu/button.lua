@@ -20,7 +20,6 @@ function button.new(init)
   self.color = init.color or {255,255,255,255}
   self.img = init.img or 0
   self.sound = init.sound or 1
-  print(self.sound)
   
   self.txt = init.txt or ""
   self.txtOffset = init.txtOffset or {20,10}

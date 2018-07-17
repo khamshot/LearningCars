@@ -19,4 +19,4 @@ gamemode.showSensors = true
 gamemode.showTrails = true
 gamemode.trailTimer = 0.25
 
-gamemode.deltaTime = 0.01
+gamemode.deltaTime = 0.005

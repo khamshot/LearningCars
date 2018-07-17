@@ -138,6 +138,7 @@ function world:nextGen()
   self.generation = self.generation + 1
   local oldNetworks = helper.copyNetworks(self.networks)
   local fittest = helper.findFittest(oldNetworks)
+  print(fittest,oldNetworks[fittest].fitness)
   oldNetworks[fittest].fitness = 0
   
   -- for the best network, generate 2 mutated and 1 unmutated TODO
