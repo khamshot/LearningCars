@@ -1,32 +1,18 @@
-frame = require "menu.menuItems.frame";
-button = require "menu.menuItems.button";
-slider = require "menu.menuItems.slider";
+menu = {
+  items= {}}
 
-local menu = {};
+function menu:setItems(items)
+  self.items = items
+end
 
-function menu.exec()
-  --placeholder function
-  --stuff like keyboard checks
-end;
-
-function menu:clear(p_clear)
-  frame:clear();
-  button:clear();
-  slider:clear();
-  if p_clear then self.exec = function() end; end;
-end;
-
-function menu:update(dt)
-  frame:update(dt);
-  button:update(dt);
-  slider:update(dt);
-  self.exec();
-end;
+function menu:update(mouseX,mouseY)
+  for i,v in ipairs(self.items) do
+    v:update(mouseX,mouseY)
+  end
+end
 
 function menu:draw()
-  frame:draw();
-  button:draw();
-  slider:draw();
-end;
-
-return menu;
+  for i,v in ipairs(self.items) do
+    v:draw()
+  end
+end

@@ -1,93 +1,101 @@
---local frame = require "frame";
---local physMgt = require "physMgt";
+local button = setmetatable({},
+  {__call = function(self,...) return self.new(...) end})
 
-function button_new(p_attr)
-  local button = frame_new(p_attr);
-  button.sound = love.audio.newSource("media/sfx/"..(p_attr.sound or "button1.mp3"));
-  button.active = false;
-  button.activeColor = p_attr.activeColor or {255,255,255,255};
-  
-  function button:drawButton()
-    --draws the buttons Background
-    if not self.active then
-      love.graphics.setColor(self.color[1]*g.brightness,self.color[2]*g.brightness,self.color[3]*g.brightness,self.color[4]);
-    else
-      love.graphics.setColor(self.activeColor[1]*g.brightness,self.activeColor[2]*g.brightness,self.activeColor[3]*g.brightness,self.activeColor[4]);
-    end;
-    if not self.img then
-      love.graphics.rectangle("fill",self.x,self.y,self.width,self.height);
-    else
-      love.graphics.draw(self.img,self.x,self.y,0,self.width/self.img:getWidth(),self.height/self.img:getHeight());
-    end;
-  end;
-  
-  function button:drawTxt()
-    --draws the buttontxt
-    love.graphics.setFont(self.font);
-    love.graphics.print(self.txt,self.x+self.txtOffset[1],self.y+self.txtOffset[2]);
-  end;
-  
-  function button:execute()
-    --executes the function exec if defined
-    if self.active and inputMgt:mousePressed(1) then
-      if type(self.exec) == "function" then
-        self.exec(self);
-      end;
-    end;
-  end;
-  
-  function button:checkCol(p_x,p_y)
-    --checks if the input collides with the button // mouse x and y // -->calls activate/deactivate
-    if physMgt.checkCol(p_x,p_y,1,1,self.x,self.y,self.width,self.height) then
-      self:activate();
-    else
-      self:deactivate();
-    end;
-  end;
-  
-  function button:activate()
-    --activates the button and plays a sound
-    if not self.active then
-      button.sound:stop();
-      button.sound:play();
-      self.active = true;
-    end;
-  end;
-  
-  function button:deactivate()
-    --deactivates the button
-    self.active = false;
-  end;
-  
-  return button;
-end;
+button.imgs = {
+  love.graphics.newImage("media/yellow_panel.png"),
+  love.graphics.newImage("media/green_panel.png"),
+  love.graphics.newImage("media/red_panel.png"),
+  love.graphics.newImage("media/blue_panel.png"),
+  love.graphics.newImage("media/red_boxCross.png")}
 
----- ALL BUTTONS ----
+button.sounds = {
+  love.audio.newSource("media/sfx/button1.wav")}
 
-local button = {};
+function button.new(init)
+  local self = setmetatable({},{__index = button})
+  self.x = init.x or 50
+  self.y = init.y or 50
+  self.width = init.width or 50
+  self.height = init.height or 50
+  self.color = init.color or {255,255,255,255}
+  self.img = init.img or 0
+  self.sound = init.sound or 1
+  print(self.sound)
+  
+  self.txt = init.txt or ""
+  self.txtOffset = init.txtOffset or {20,10}
+  self.txtColor = init.txtColor or {255,255,255,255}
 
-function button:new(p_attr)
-  table.insert(self,button_new(p_attr));
-end;
+  self.colorOffset = init.colorOffset or {255,0,255,255}
+  self.txtColorOffset = init.txtColorOffset or {255,0,255,255}
+  
+  self.exec = init.exec
 
-function button:clear()
-  while self[1] do
-    table.remove(self,1);
-  end;
-end;
+  self.active = false
 
-function button:update(dt)
-  for i,v in ipairs(self) do
-    v:checkCol(love.mouse.getX(),love.mouse.getY());
-    v:execute();
-  end;
-end;
+  return self
+end
+
+function button:update(mouseX,mouseY)
+-- checks if the mouse is over then button etc.  
+  self:activate(
+    helper.checkCol(
+      self.x * settings.scale.x,
+      self.y * settings.scale.y,
+      self.width * settings.scale.x,
+      self.height * settings.scale.y,
+      love.mouse.getX(),
+      love.mouse.getY(),
+      1,1)) 
+  
+  if self.active and mouseX and mouseY then
+    if type(self.exec) == "function" then
+      self.exec(self)
+    end
+  end
+end
+
+function button:activate(bool)
+  if bool and not self.active then
+    self.sounds[self.sound]:stop()
+    self.sounds[self.sound]:play()
+    self.active = true
+  end
+  if not bool then
+    self.active = false
+  end
+end
 
 function button:draw()
-  for i,v in ipairs(self) do
-    v:drawButton();
-    v:drawTxt();
-  end;
-end;
+  if self.active then
+    love.graphics.setColor(self.colorOffset)
+  else
+    love.graphics.setColor(self.color)
+  end
+  
+  if self.img ~= 0 then
+    love.graphics.draw(
+      self.imgs[self.img],
+      self.x * settings.scale.x,
+      self.y * settings.scale.y,
+      0,
+      self.width/self.imgs[self.img]:getWidth() * settings.scale.x,
+      self.height/self.imgs[self.img]:getHeight() * settings.scale.y)
+  end
+  self:drawTxt()
+end
 
-return button;
+function button:drawTxt()
+  if self.active then
+    love.graphics.setColor(self.txtColorOffset)
+  else
+    love.graphics.setColor(self.txtColor)
+  end
+  
+  love.graphics.print(
+    self.txt,
+    (self.x + self.txtOffset[1]) * settings.scale.x,
+    (self.y + self.txtOffset[2]) * settings.scale.y)
+end
+  
+return button

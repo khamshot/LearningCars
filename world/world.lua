@@ -41,7 +41,7 @@ function world:generateNetworks(count,hiddenNodeCount)
   local network = require "world/neuralnetwork"
   local networksTemp = {}
   for i = 1, count do
-    table.insert(networksTemp,network({inodes=7,hnodes=hiddenNodeCount,onodes=2}))
+    table.insert(networksTemp,network({inodes=6,hnodes=hiddenNodeCount,onodes=2}))
   end
   self:setNetworks(networksTemp)
 end
@@ -86,8 +86,7 @@ function world:moveCars(dt)
     local sensorValuesCheckpoints = v:getSensorValues(self.checkpoints)
     local sensorValues = {
       sensorValuesWalls[1],sensorValuesWalls[2],sensorValuesWalls[3],
-      sensorValuesCheckpoints[1],sensorValuesCheckpoints[2],sensorValuesCheckpoints[3],
-      {dt}}
+      sensorValuesCheckpoints[1],sensorValuesCheckpoints[2],sensorValuesCheckpoints[3]}
     
     local networkOutputs = self.networks[i]:query(sensorValues)
     

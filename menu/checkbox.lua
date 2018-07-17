@@ -16,7 +16,7 @@ function checkbox.new(init)
   self.height = init.height or 30
   self.img = init.img or 1
   self.value = init.value or false 
-  checkbox.color = init.color or {255,255,255,255}
+  self.color = init.color or {255,255,255,255}
   
   self.exec = init.exec
   

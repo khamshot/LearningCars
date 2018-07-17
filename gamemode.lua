@@ -15,6 +15,8 @@ function gamemode.setmode(worldUpdate,worldDraw,menuUpdate,menuDraw)
   gamemode.menu.draw = menuDraw
 end
 
+gamemode.showSensors = true
 gamemode.showTrails = true
 gamemode.trailTimer = 0.25
-gamemode.showSensors = true
+
+gamemode.deltaTime = 0.01

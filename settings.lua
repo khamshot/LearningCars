@@ -21,7 +21,7 @@ function settings.setScreenResolution(width,height,flags)
     y = settings.screenH/settings.defaultH}
   
   love.graphics.setDefaultFilter("nearest","nearest")
-  love.graphics.setNewFont("media/Shermlock.ttf",settings.defaultFontsize * settings.screenW/settings.defaultW)
+  love.graphics.setNewFont("media/fonts/Shermlock.ttf",settings.defaultFontsize * settings.screenW/settings.defaultW)
 end
 
 function settings.setKey(bind,key)  

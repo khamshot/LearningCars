@@ -4,7 +4,7 @@ local slider = require "menu/slider"
 
 local ingameUI = {}
 
-table.insert(ingameUI,frame({x=1300,y=20,width=600,height=400,img=1,color={255,255,255,135}}))
+table.insert(ingameUI,frame({x=1300,y=20,width=600,height=400,img=2,color={255,255,255,135}}))
 
 table.insert(ingameUI,frame({x=1315,y=13,width=0,height=0,txt="generation:"}))
 table.insert(ingameUI,frame({x=1570,y=13,width=0,height=0,
