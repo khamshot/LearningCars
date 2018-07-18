@@ -5,7 +5,7 @@ local car = setmetatable({},
 
 car.width = 20
 car.length = 30
-car.speed = 500
+car.speed = 300
 car.turnspeed = 15
 car.sensorlen = 200
 car.imgs = {

@@ -53,7 +53,6 @@ function slider:update(mouseX,mouseY,what)
   end
   
   if self.active then
-    print(love.mouse.getX()/settings.scale.x,self.x)
     if love.mouse.getX()/settings.scale.x < self.x then
       self.tickX = self.x
     elseif love.mouse.getX()/settings.scale.x > (self.x + self.width) then

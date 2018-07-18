@@ -21,12 +21,12 @@ function world:setCars(cars)
   self:setFocus(self.cars[1])
 end
 
-function world:generateCars(count)
+function world:generateCars(count,x,y)
 -- generate a number of cars with random color
   local car = require "world/car"
   local carsTemp = {}
   for i = 1, count do
-    table.insert(carsTemp,car({ID=i,color=helper.randomColor()}))
+    table.insert(carsTemp,car({ID=i,x=x,y=y,color=helper.randomColor()}))
   end
   self:setCars(carsTemp)
 end

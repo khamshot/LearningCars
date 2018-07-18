@@ -15,12 +15,12 @@ function love.load()
   gamemode.setmode(false,false,true,true)
   menu:setItems(require "menus/mainMenu")
   
-  world:generateCars(9)
+  world:generateCars(9,840,750)
   world:generateNetworks(9,400)
   
-  local map01 = require "maps/map01"
-  world:setWalls(map01.walls)
-  world:setCheckpoints(map01.checkpoints)
+  local map = require "maps/map02"
+  world:setWalls(map.walls)
+  world:setCheckpoints(map.checkpoints)
 end
 
 function love.update(dt)
@@ -47,7 +47,7 @@ function love.draw()
 end
 
 function love.keypressed(key)
-  if key == setting.keys.escape then
+  if key == settings.keys.escape then
     gamemode.setmode(not gamemode.world.update,true,not gamemode.menu.update,not gamemode.menu.draw)
   end
 end

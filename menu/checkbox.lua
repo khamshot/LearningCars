@@ -23,7 +23,9 @@ function checkbox.new(init)
   return self  
 end
 
-function checkbox:update(mouseX,mouseY)
+function checkbox:update(mouseX,mouseY,what)
+  if what ~= "pressed" then return 0 end
+  
   if helper.checkCol(mouseX,mouseY,1,1,
     self.x * settings.scale.x,
     self.y * settings.scale.y,
