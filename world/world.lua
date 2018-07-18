@@ -72,9 +72,9 @@ function world:update(dt)
   end
 end
 
-function world:updateUI(mouseX,mouseY)
+function world:updateUI(mouseX,mouseY,what)  
   for i,v in ipairs(self.ui) do
-    v:update(mouseX,mouseY)
+    v:update(mouseX,mouseY,what)
   end
 end
 

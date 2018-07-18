@@ -19,21 +19,22 @@ function slider.new(init)
   self.img = init.img or 1
   self.color = init.color or {255,255,255,255}
   
-  self.minValue = init.minValue or 2
-  self.maxValue = init.maxValue or 10
+  self.minValue = init.minValue or 0
+  self.maxValue = init.maxValue or 1
   self.value = init.value or self.minValue
   self.tickX = self.x + self.width * (self.value-self.minValue)/(self.maxValue-self.minValue)
   
   self.exec = init.exec
+  self.active = false
   
   return self
 end
 
 --- UPDATE ---
 
-function slider:update()
+function slider:update(mouseX,mouseY,what)
 -- checks for mouseinputs and sets the slider value
-  if love.mouse.isDown(1) then
+  if mouseX and mouseY and what == "pressed" then
     if helper.checkCol(
       self.x * settings.scale.x,
       self.y * settings.scale.y,
@@ -43,13 +44,29 @@ function slider:update()
       love.mouse.getY(),
       1,1) 
     then
+      self.active = true
+    end
+  end
+  
+  if mouseX and mouseY and what == "released" then
+    self.active = false
+  end
+  
+  if self.active then
+    print(love.mouse.getX()/settings.scale.x,self.x)
+    if love.mouse.getX()/settings.scale.x < self.x then
+      self.tickX = self.x
+    elseif love.mouse.getX()/settings.scale.x > (self.x + self.width) then
+      self.tickX = self.x + self.width
+    else
       self.tickX = love.mouse.getX()/settings.scale.x
-      self.value = 1 - (self.x + self.width - self.tickX) / self.width
-      self.value = (self.maxValue - self.minValue) * self.value + self.minValue
-      
-      if type(self.exec) == "function" then
-        self.exec(self)
-      end
+    end
+    
+    self.value = 1 - (self.x + self.width - self.tickX) / self.width
+    self.value = (self.maxValue - self.minValue) * self.value + self.minValue
+    
+    if type(self.exec) == "function" then
+      self.exec(self)
     end
   end
 end
@@ -67,7 +84,7 @@ function slider:draw()
     1)
   
   love.graphics.draw(self.imgs[self.img],
-    (self.tickX - self.imgs[1]:getWidth()/2) * settings.scale.x,
+    (self.tickX - self.imgs[self.img]:getWidth()/2) * settings.scale.x,
     self.y * settings.scale.y,
     0,
     settings.scale.x,

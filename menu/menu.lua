@@ -1,13 +1,14 @@
 menu = {
-  items= {}}
+  items = {},
+  ID = ""}
 
 function menu:setItems(items)
   self.items = items
 end
 
-function menu:update(mouseX,mouseY)
+function menu:update(mouseX,mouseY,what)
   for i,v in ipairs(self.items) do
-    v:update(mouseX,mouseY)
+    v:update(mouseX,mouseY,what)
   end
 end
 

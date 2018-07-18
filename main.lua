@@ -47,18 +47,27 @@ function love.draw()
 end
 
 function love.keypressed(key)
-  if key == "escape" then
+  if key == setting.keys.escape then
     gamemode.setmode(not gamemode.world.update,true,not gamemode.menu.update,not gamemode.menu.draw)
   end
 end
 
 function love.mousepressed(x,y,button)
   if button ~= 1 then return 0 end
-  
   if gamemode.world.update then
-    world:updateUI(x,y)
+    world:updateUI(x,y,"pressed")
   end
   if gamemode.menu.update then
-    menu:update(x,y)
+    menu:update(x,y,"pressed")
+  end
+end
+
+function love.mousereleased(x,y,button)
+  if button ~= 1 then return 0 end
+  if gamemode.world.update then
+    world:updateUI(x,y,"released")
+  end
+  if gamemode.menu.update then
+    menu:update(x,y,"released")
   end
 end

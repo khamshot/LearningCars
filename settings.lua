@@ -5,7 +5,7 @@ settings = {
   defaultW = 1920,
   defaultH = 1080,
   defaultFontsize = 45,
-  keys = {skip="s"}}
+  keys = {escape="escape"}}
 
 function settings.setScreenResolution(width,height,flags)
 --setting up the screen resolution and scaling factors
