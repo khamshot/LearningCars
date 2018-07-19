@@ -19,7 +19,7 @@ function love.load()
   world:generateCars(9,840,750)
   world:generateNetworks(9,400)
   
-  local map = require "maps/map01"
+  local map = require "maps/map03"
   world:setWalls(map.walls)
   world:setCheckpoints(map.checkpoints)
 end
