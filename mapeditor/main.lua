@@ -41,7 +41,7 @@ function love.draw()
   for i,v in ipairs(map.checkpoints) do
     love.graphics.line(v.x-offset.x,v.y-offset.y,v.x2-offset.x,v.y2-offset.y)
   end
-  love.graphics.draw(car,840,750,math.pi)
+  love.graphics.draw(car,840-offset.x,750-offset.y,math.pi)
 end
 
 function love.keypressed(key)
