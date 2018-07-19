@@ -23,14 +23,14 @@ function checkbox.new(init)
   return self  
 end
 
-function checkbox:update(mouseX,mouseY,what)
-  if what ~= "pressed" then return 0 end
+function checkbox:update(input)
+  if not input.mousePressed then return 0 end
   
-  if helper.checkCol(mouseX,mouseY,1,1,
-    self.x * settings.scale.x,
-    self.y * settings.scale.y,
-    self.width * settings.scale.x,
-    self.height * settings.scale.y)
+  if helper.checkCol(input.mouseX,input.mouseY,1,1,
+    self.x * settings.uiScale.x,
+    self.y * settings.uiScale.y,
+    self.width * settings.uiScale.x,
+    self.height * settings.uiScale.y)
   then
     self.value = not self.value
     if type(self.exec) == "function" then
@@ -46,19 +46,19 @@ function checkbox:draw()
   if self.value then
     love.graphics.draw(
       self.imgs[self.img][1],
-      self.x * settings.scale.x,
-      self.y * settings.scale.y,
+      self.x * settings.uiScale.x,
+      self.y * settings.uiScale.y,
       0,
-      self.width/self.imgs[self.img][1]:getWidth() * settings.scale.x,
-      self.height/self.imgs[self.img][1]:getHeight() * settings.scale.y)
+      self.width/self.imgs[self.img][1]:getWidth() * settings.uiScale.x,
+      self.height/self.imgs[self.img][1]:getHeight() * settings.uiScale.y)
   else
     love.graphics.draw(
       self.imgs[self.img][2],
-      self.x * settings.scale.x,
-      self.y * settings.scale.y,
+      self.x * settings.uiScale.x,
+      self.y * settings.uiScale.y,
       0,
-      self.width/self.imgs[self.img][1]:getWidth() * settings.scale.x,
-      self.height/self.imgs[self.img][1]:getHeight() * settings.scale.y)
+      self.width/self.imgs[self.img][1]:getWidth() * settings.uiScale.x,
+      self.height/self.imgs[self.img][1]:getHeight() * settings.uiScale.y)
   end
 end
 

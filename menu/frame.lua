@@ -35,11 +35,11 @@ function frame:draw()
   if self.img ~= 0 then
     love.graphics.draw(
       self.imgs[self.img],
-      self.x * settings.scale.x,
-      self.y * settings.scale.y,
+      self.x * settings.uiScale.x,
+      self.y * settings.uiScale.y,
       0,
-      self.width/self.imgs[self.img]:getWidth() * settings.scale.x,
-      self.height/self.imgs[self.img]:getHeight() * settings.scale.y)
+      self.width/self.imgs[self.img]:getWidth() * settings.uiScale.x,
+      self.height/self.imgs[self.img]:getHeight() * settings.uiScale.y)
   end
   self:drawTxt()
 end
@@ -48,8 +48,8 @@ function frame:drawTxt()
   love.graphics.setColor(self.txtColor)
   love.graphics.print(
     self.txt,
-    (self.x + self.txtOffset[1]) * settings.scale.x,
-    (self.y + self.txtOffset[2]) * settings.scale.y)
+    (self.x + self.txtOffset[1]) * settings.uiScale.x,
+    (self.y + self.txtOffset[2]) * settings.uiScale.y)
 end
   
 return frame

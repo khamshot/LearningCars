@@ -32,14 +32,14 @@ end
 
 --- UPDATE ---
 
-function slider:update(mouseX,mouseY,what)
+function slider:update(input)
 -- checks for mouseinputs and sets the slider value
-  if mouseX and mouseY and what == "pressed" then
+  if input.mousePressed then
     if helper.checkCol(
-      self.x * settings.scale.x,
-      self.y * settings.scale.y,
-      self.width * settings.scale.x,
-      self.height * settings.scale.y,
+      self.x * settings.uiScale.x,
+      self.y * settings.uiScale.y,
+      self.width * settings.uiScale.x,
+      self.height * settings.uiScale.y,
       love.mouse.getX(),
       love.mouse.getY(),
       1,1) 
@@ -48,17 +48,17 @@ function slider:update(mouseX,mouseY,what)
     end
   end
   
-  if mouseX and mouseY and what == "released" then
+  if input.mouseReleased then
     self.active = false
   end
   
   if self.active then
-    if love.mouse.getX()/settings.scale.x < self.x then
+    if love.mouse.getX()/settings.uiScale.x < self.x then
       self.tickX = self.x
-    elseif love.mouse.getX()/settings.scale.x > (self.x + self.width) then
+    elseif love.mouse.getX()/settings.uiScale.x > (self.x + self.width) then
       self.tickX = self.x + self.width
     else
-      self.tickX = love.mouse.getX()/settings.scale.x
+      self.tickX = love.mouse.getX()/settings.uiScale.x
     end
     
     self.value = 1 - (self.x + self.width - self.tickX) / self.width
@@ -76,18 +76,18 @@ function slider:draw()
   love.graphics.setColor(self.color)
   -- draw the line
   love.graphics.draw(self.imgs.line,
-    self.x * settings.scale.x,
-    self.y * settings.scale.y,
+    self.x * settings.uiScale.x,
+    self.y * settings.uiScale.y,
     0,
-    self.width/self.imgs.line:getWidth() * settings.scale.x,
+    self.width/self.imgs.line:getWidth() * settings.uiScale.x,
     1)
   
   love.graphics.draw(self.imgs[self.img],
-    (self.tickX - self.imgs[self.img]:getWidth()/2) * settings.scale.x,
-    self.y * settings.scale.y,
+    (self.tickX - self.imgs[self.img]:getWidth()/2) * settings.uiScale.x,
+    self.y * settings.uiScale.y,
     0,
-    settings.scale.x,
-    settings.scale.y)
+    settings.uiScale.x,
+    settings.uiScale.y)
 end
 
 return slider

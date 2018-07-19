@@ -12,6 +12,8 @@ temp = {
 
 offset = {x=0, y=0}
 
+car = love.graphics.newImage("car1.png")
+
 function love.load()
   love.filesystem.setIdentity("mapeditor")
   love.window.setMode(1920,1080,{fullscreen=false})
@@ -39,6 +41,7 @@ function love.draw()
   for i,v in ipairs(map.checkpoints) do
     love.graphics.line(v.x-offset.x,v.y-offset.y,v.x2-offset.x,v.y2-offset.y)
   end
+  love.graphics.draw(car,840,750,math.pi)
 end
 
 function love.keypressed(key)

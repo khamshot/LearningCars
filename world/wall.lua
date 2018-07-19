@@ -15,10 +15,10 @@ end
 function wall:draw(focus)
   love.graphics.setColor(self.color)
   love.graphics.line(
-    self.x * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
-    self.y * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y,
-    self.x2 * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
-    self.y2 * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y)
+    self.x * settings.scale.x + settings.screen.w/2 - focus.x * settings.scale.x,
+    self.y * settings.scale.y + settings.screen.h/2 - focus.y * settings.scale.y,
+    self.x2 * settings.scale.x + settings.screen.w/2 - focus.x * settings.scale.x,
+    self.y2 * settings.scale.y + settings.screen.h/2 - focus.y * settings.scale.y)
 end
 
 return wall

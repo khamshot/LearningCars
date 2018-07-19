@@ -129,8 +129,41 @@ function car:resetCar(ref)
   end
 end
 
+function car:getSensorValues(objects)
+-- returns the sensor values
+  local l,m,r = self.sensorlen,self.sensorlen,self.sensorlen
+  local tempbool,tempXY 
+  
+  for i,v in ipairs(objects) do
+    -- if statement for checkpoint
+    if objects.ignoreID and not objects.ignoreID[self.ID] then
+      -- left sensor
+      tempbool, tempXY = matrix.vector_intersection(self.sensorL[1],self.sensorL[2],{v.x,v.y},{v.x2,v.y2})
+      if type(tempXY) == "table" then
+        tempXY = math.sqrt((self.sensorL[1][1]-tempXY[1])^2+(self.sensorL[1][2]-tempXY[2])^2)
+        if tempXY < l then l = tempXY end
+      end
+      -- middle sensor
+      tempbool, tempXY = matrix.vector_intersection(self.sensorM[1],self.sensorM[2],{v.x,v.y},{v.x2,v.y2})
+      if type(tempXY) == "table" then
+        tempXY = math.sqrt((self.sensorM[1][1]-tempXY[1])^2+(self.sensorM[1][2]-tempXY[2])^2)
+        if tempXY < m then m = tempXY end
+      end
+      -- right sensor
+      tempbool, tempXY = matrix.vector_intersection(self.sensorR[1],self.sensorR[2],{v.x,v.y},{v.x2,v.y2})
+      if type(tempXY) == "table" then
+        tempXY = math.sqrt((self.sensorR[1][1]-tempXY[1])^2+(self.sensorR[1][2]-tempXY[2])^2)
+        if tempXY < r then r = tempXY end
+      end
+    end
+  end
+  
+  return {{1-l/self.sensorlen},{1-m/self.sensorlen},{1-r/self.sensorlen}}
+end
+
+
 function car:updateSensors()
-  --refreshes the positions of the sensors
+-- refreshes the positions of the sensors
   --left sensor
   self.sensorL[1] = {self.x-math.sin(self.rot)*self.length - math.cos(self.rot-math.pi)*self.width/2,
     self.y+math.cos(self.rot)*self.length - math.sin(self.rot-math.pi)*self.width/2}
@@ -149,44 +182,14 @@ function car:updateSensors()
   self.sensorR[2] = {self.x-math.sin(self.rot)*self.length-math.sin(self.rot+math.pi/4)*self.sensorlen + math.cos(self.rot+math.pi)*self.width/2,
     self.y+math.cos(self.rot)*self.length+math.cos(self.rot+math.pi/4)*self.sensorlen + math.sin(self.rot+math.pi)*self.width/2}  
 end
-
-function car:getSensorValues(Walls)
--- returns the sensor values
-  local l,m,r = self.sensorlen,self.sensorlen,self.sensorlen
-  local tempbool,tempXY 
-  
-  for i,v in ipairs(Walls) do
-    --left sensor
-    tempbool, tempXY = matrix.vector_intersection(self.sensorL[1],self.sensorL[2],{v.x,v.y},{v.x2,v.y2})
-    if type(tempXY) == "table" then
-      tempXY = math.sqrt((self.sensorL[1][1]-tempXY[1])^2+(self.sensorL[1][2]-tempXY[2])^2)
-      if tempXY < l then l = tempXY end
-    end
-    --middle sensor
-    tempbool, tempXY = matrix.vector_intersection(self.sensorM[1],self.sensorM[2],{v.x,v.y},{v.x2,v.y2})
-    if type(tempXY) == "table" then
-      tempXY = math.sqrt((self.sensorM[1][1]-tempXY[1])^2+(self.sensorM[1][2]-tempXY[2])^2)
-      if tempXY < m then m = tempXY end
-    end
-    --right sensor
-    tempbool, tempXY = matrix.vector_intersection(self.sensorR[1],self.sensorR[2],{v.x,v.y},{v.x2,v.y2})
-    if type(tempXY) == "table" then
-      tempXY = math.sqrt((self.sensorR[1][1]-tempXY[1])^2+(self.sensorR[1][2]-tempXY[2])^2)
-      if tempXY < r then r = tempXY end
-    end
-  end
-  
-  return {{1-l/self.sensorlen},{1-m/self.sensorlen},{1-r/self.sensorlen}}
-end
-
 --- DRAW ---
 
 function car:draw(focus)
   love.graphics.setColor(self.color)
   love.graphics.draw(
     self.imgs[self.img],
-    self.x * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
-    self.y * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y,
+    self.x * settings.scale.x + settings.screen.w/2 - focus.x * settings.scale.x,
+    self.y * settings.scale.y + settings.screen.h/2 - focus.y * settings.scale.y,
     self.rot,settings.scale.x,settings.scale.y,self.width/2,0)
   
   self:drawSensors(focus)
@@ -198,20 +201,20 @@ function car:drawSensors(focus)
     return end
   if not self.crashed then
     love.graphics.line(
-      self.sensorL[1][1] * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
-      self.sensorL[1][2] * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y,
-      self.sensorL[2][1] * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
-      self.sensorL[2][2] * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y)
+      self.sensorL[1][1] * settings.scale.x + settings.screen.w/2 - focus.x * settings.scale.x,
+      self.sensorL[1][2] * settings.scale.y + settings.screen.h/2 - focus.y * settings.scale.y,
+      self.sensorL[2][1] * settings.scale.x + settings.screen.w/2 - focus.x * settings.scale.x,
+      self.sensorL[2][2] * settings.scale.y + settings.screen.h/2 - focus.y * settings.scale.y)
     love.graphics.line(
-      self.sensorM[1][1] * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
-      self.sensorM[1][2] * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y,
-      self.sensorM[2][1] * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
-      self.sensorM[2][2] * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y)
+      self.sensorM[1][1] * settings.scale.x + settings.screen.w/2 - focus.x * settings.scale.x,
+      self.sensorM[1][2] * settings.scale.y + settings.screen.h/2 - focus.y * settings.scale.y,
+      self.sensorM[2][1] * settings.scale.x + settings.screen.w/2 - focus.x * settings.scale.x,
+      self.sensorM[2][2] * settings.scale.y + settings.screen.h/2 - focus.y * settings.scale.y)
     love.graphics.line(
-      self.sensorR[1][1] * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
-      self.sensorR[1][2] * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y,
-      self.sensorR[2][1] * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
-      self.sensorR[2][2] * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y)
+      self.sensorR[1][1] * settings.scale.x + settings.screen.w/2 - focus.x * settings.scale.x,
+      self.sensorR[1][2] * settings.scale.y + settings.screen.h/2 - focus.y * settings.scale.y,
+      self.sensorR[2][1] * settings.scale.x + settings.screen.w/2 - focus.x * settings.scale.x,
+      self.sensorR[2][2] * settings.scale.y + settings.screen.h/2 - focus.y * settings.scale.y)
   end
 end
 
@@ -220,10 +223,10 @@ function car:drawTrails(focus)
     return end
   for i=1,(#self.trail-1) do
     love.graphics.line(
-      self.trail[i].x * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
-      self.trail[i].y * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y,
-      self.trail[i+1].x * settings.scale.x + settings.screenW/2 - focus.x * settings.scale.x,
-      self.trail[i+1].y * settings.scale.y + settings.screenH/2 - focus.y * settings.scale.y)
+      self.trail[i].x * settings.scale.x + settings.screen.w/2 - focus.x * settings.scale.x,
+      self.trail[i].y * settings.scale.y + settings.screen.h/2 - focus.y * settings.scale.y,
+      self.trail[i+1].x * settings.scale.x + settings.screen.w/2 - focus.x * settings.scale.x,
+      self.trail[i+1].y * settings.scale.y + settings.screen.h/2 - focus.y * settings.scale.y)
   end
 end
 

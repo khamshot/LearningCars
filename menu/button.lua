@@ -35,19 +35,19 @@ function button.new(init)
   return self
 end
 
-function button:update(mouseX,mouseY)
+function button:update(input)
 -- checks if the mouse is over then button etc.  
   self:activate(
     helper.checkCol(
-      self.x * settings.scale.x,
-      self.y * settings.scale.y,
-      self.width * settings.scale.x,
-      self.height * settings.scale.y,
+      self.x * settings.uiScale.x,
+      self.y * settings.uiScale.y,
+      self.width * settings.uiScale.x,
+      self.height * settings.uiScale.y,
       love.mouse.getX(),
       love.mouse.getY(),
       1,1)) 
   
-  if self.active and mouseX and mouseY then
+  if self.active and input.mousePressed then
     if type(self.exec) == "function" then
       self.exec(self)
     end
@@ -75,11 +75,11 @@ function button:draw()
   if self.img ~= 0 then
     love.graphics.draw(
       self.imgs[self.img],
-      self.x * settings.scale.x,
-      self.y * settings.scale.y,
+      self.x * settings.uiScale.x,
+      self.y * settings.uiScale.y,
       0,
-      self.width/self.imgs[self.img]:getWidth() * settings.scale.x,
-      self.height/self.imgs[self.img]:getHeight() * settings.scale.y)
+      self.width/self.imgs[self.img]:getWidth() * settings.uiScale.x,
+      self.height/self.imgs[self.img]:getHeight() * settings.uiScale.y)
   end
   self:drawTxt()
 end
@@ -93,8 +93,8 @@ function button:drawTxt()
   
   love.graphics.print(
     self.txt,
-    (self.x + self.txtOffset[1]) * settings.scale.x,
-    (self.y + self.txtOffset[2]) * settings.scale.y)
+    (self.x + self.txtOffset[1]) * settings.uiScale.x,
+    (self.y + self.txtOffset[2]) * settings.uiScale.y)
 end
   
 return button

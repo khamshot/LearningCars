@@ -8,9 +8,10 @@ function love.load()
   math.randomseed(os.time())
   love.graphics.setBackgroundColor(11,11,11)
   
-  settings.setScreenResolution(960,540,{resizable=false,fullscreen=false})
-  --settings.setScreenResolution(1600,1000,{resizable=false,fullscreen=false})
-  --settings.setScreenResolution(1920,1080,{resizable=false,fullscreen=true})
+  settings.setScreenRes(960,540,{resizable=false,fullscreen=false})
+  --settings.setScreenRes(1600,1000,{resizable=false,fullscreen=false})
+  --settings.setScreenRes(1920,1080,{resizable=false,fullscreen=true})
+  settings.setDefaultRes(1920/1.5,1080/1.5)
   
   gamemode.setmode(false,false,true,true)
   menu:setItems(require "menus/mainMenu")
@@ -18,7 +19,7 @@ function love.load()
   world:generateCars(9,840,750)
   world:generateNetworks(9,400)
   
-  local map = require "maps/map02"
+  local map = require "maps/map01"
   world:setWalls(map.walls)
   world:setCheckpoints(map.checkpoints)
 end
@@ -33,7 +34,7 @@ function love.update(dt)
     world:update(dt) 
   end
   if gamemode.menu.update then
-    menu:update() 
+    menu:update({}) 
   end
 end
 
@@ -55,19 +56,19 @@ end
 function love.mousepressed(x,y,button)
   if button ~= 1 then return 0 end
   if gamemode.world.update then
-    world:updateUI(x,y,"pressed")
+    world:updateUI({mouseX=x,mouseY=y,mousePressed=true})
   end
   if gamemode.menu.update then
-    menu:update(x,y,"pressed")
+    menu:update({mouseX=x,mouseY=y,mousePressed=true})
   end
 end
 
 function love.mousereleased(x,y,button)
   if button ~= 1 then return 0 end
   if gamemode.world.update then
-    world:updateUI(x,y,"released")
+    world:updateUI({mouseX=x,mouseY=y,mouseReleased=true})
   end
   if gamemode.menu.update then
-    menu:update(x,y,"released")
+    menu:update({mouseX=x,mouseY=y,mouseReleased=true})
   end
 end

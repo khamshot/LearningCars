@@ -6,9 +6,9 @@ function menu:setItems(items)
   self.items = items
 end
 
-function menu:update(mouseX,mouseY,what)
+function menu:update(input)
   for i,v in ipairs(self.items) do
-    v:update(mouseX,mouseY,what)
+    v:update(input)
   end
 end
 

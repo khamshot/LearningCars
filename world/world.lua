@@ -65,16 +65,16 @@ end
 function world:update(dt)
   self:moveCars(dt)
   self:updFocus()
-  self:updateUI(-1,-1)
+  self:updateUI({})
   if self:checkAllCrashed() then
     self:reset()
     self:nextGen()
   end
 end
 
-function world:updateUI(mouseX,mouseY,what)  
+function world:updateUI(input)  
   for i,v in ipairs(self.ui) do
-    v:update(mouseX,mouseY,what)
+    v:update(input)
   end
 end
 
