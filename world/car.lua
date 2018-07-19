@@ -136,7 +136,7 @@ function car:getSensorValues(objects)
   
   for i,v in ipairs(objects) do
     -- if statement for checkpoint
-    if objects.ignoreID and not objects.ignoreID[self.ID] then
+    if not objects.ignoreID or (objects.ignoreID and not objects.ignoreID[self.ID]) then
       -- left sensor
       tempbool, tempXY = matrix.vector_intersection(self.sensorL[1],self.sensorL[2],{v.x,v.y},{v.x2,v.y2})
       if type(tempXY) == "table" then
