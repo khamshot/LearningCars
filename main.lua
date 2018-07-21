@@ -72,3 +72,11 @@ function love.mousereleased(x,y,button)
     menu:update({mouseX=x,mouseY=y,mouseReleased=true})
   end
 end
+
+function love.wheelmoved(x,y)
+  if y > 0 then
+    settings.setDefaultRes(settings.default.w*0.8,settings.default.h*0.8)
+  else
+    settings.setDefaultRes(settings.default.w*1.2,settings.default.h*1.2)
+  end
+end
