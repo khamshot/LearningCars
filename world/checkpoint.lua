@@ -8,7 +8,7 @@ function checkpoint.new(init)
   self.y = init.y
   self.x2 = init.x2
   self.y2 = init.y2
-  self.reward = init.reward or 500
+  self.reward = init.reward or 2000
   checkpoint.color = init.color or {0,255,0,255}
   
   -- List of all cars who already went through the checkpoint

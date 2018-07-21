@@ -108,7 +108,7 @@ function car:checkColCheckpoints(checkpoints)
     if tempboolL or tempboolR then
       if not v:checkID(self.ID) then
         v:addID(self.ID)
-        self.fitness = self.fitness + math.min(v.reward,v.reward/self.fitnessTimer)
+        self.fitness = self.fitness + math.min(v.reward/0.1,v.reward/self.fitnessTimer)
         self.fitnessTimer = 0
       end
     end
