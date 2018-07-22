@@ -1,4 +1,4 @@
 function love.conf(t)
 	t.console = true
-	t.title = "Terminator"
+	t.title = "Ayyyy"
 end	
