@@ -15,18 +15,19 @@ function helper.randomColor()
 end
 
 function helper.deepcopy(orig)
-    local orig_type = type(orig)
-    local copy
-    if orig_type == 'table' then
-        copy = {}
-        for orig_key, orig_value in next, orig, nil do
-            copy[helper.deepcopy(orig_key)] = helper.deepcopy(orig_value)
-        end
-        setmetatable(copy, helper.deepcopy(getmetatable(orig)))
-    else -- number, string, boolean, etc
-        copy = orig
-    end
-    return copy
+-- actual copy of a table
+  local orig_type = type(orig)
+  local copy
+  if orig_type == 'table' then
+      copy = {}
+      for orig_key, orig_value in next, orig, nil do
+          copy[helper.deepcopy(orig_key)] = helper.deepcopy(orig_value)
+      end
+      setmetatable(copy, helper.deepcopy(getmetatable(orig)))
+  else -- number, string, boolean, etc
+      copy = orig
+  end
+  return copy
 end
 
 function helper.copyNetwork(netwrk)
@@ -49,16 +50,16 @@ function helper.copyNetworks(networks)
   return copiedNetworks
 end
 
-function helper.findFittest(networks)
+function helper.findFittest(objects)
 -- finds the fittest network
-  local value, genome = 0,1
-  for i,v in ipairs(networks) do
+  local value, key = 0,1
+  for i,v in ipairs(objects) do
     if value < v.fitness then
-      genome = i
+      key = i
       value = v.fitness
     end
   end
-  return genome
+  return key
 end
 
 function helper.mutateNetwork(netwrk)

@@ -24,7 +24,7 @@ function frame.new(init)
   return self
 end
 
-function frame:update()
+function frame:update(input)
   if type(self.exec) == "function" then
     self.exec(self)
   end

@@ -1,6 +1,6 @@
-function justSAVEIT(walls,checkpoints)
+function saveMap(walls,checkpoints)
   math.randomseed(os.time())
-  filename = "map" .. math.random(99) ..".lua"
+  filename = "maps/map" .. math.random(99) ..".lua"
   
   data =         "local wall = require \"world/wall\"\r\n"
   data = data .. "local checkpoint = require \"world/checkpoint\"\r\n"

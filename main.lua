@@ -1,3 +1,4 @@
+require "libs/ser"
 require "libs/helper"
 require "settings"
 require "gamemode"
@@ -8,10 +9,10 @@ function love.load()
   math.randomseed(os.time())
   love.graphics.setBackgroundColor(11,11,11)
   
+  settings.setDefaultRes(1920/1.5,1080/1.5)
   settings.setScreenRes(960,540,{resizable=false,fullscreen=false})
   --settings.setScreenRes(1600,1000,{resizable=false,fullscreen=false})
   --settings.setScreenRes(1920,1080,{resizable=false,fullscreen=true})
-  settings.setDefaultRes(1920/1.5,1080/1.5)
   
   gamemode.setmode(false,false,true,true)
   menu:setItems(require "menus/mainMenu")

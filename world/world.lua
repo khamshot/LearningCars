@@ -67,8 +67,8 @@ function world:update(dt)
   self:updFocus()
   self:updateUI({})
   if self:checkAllCrashed() then
-    self:reset()
     self:nextGen()
+    self:reset()
   end
 end
 
@@ -123,23 +123,22 @@ end
 function world:reset()
 -- resets cars and checkpoints
   for i,v in ipairs(self.cars) do
-    self.networks[i].fitness = v.fitness
     v:resetCar(self.cars.ref)
   end
   for i,v in ipairs(self.checkpoints) do
     v:clearIDs()
   end
-  
-  self.setFocus(self.cars[1])
 end
 
 function world:nextGen()
 -- new generation -> mutate networks
+
+  -- find the fittest
   self.generation = self.generation + 1
   local oldNetworks = helper.copyNetworks(self.networks)
-  local fittest = helper.findFittest(oldNetworks)
-  print(fittest,oldNetworks[fittest].fitness)
-  oldNetworks[fittest].fitness = 0
+  local fittest = helper.findFittest(self.cars)
+  print(fittest,self.cars[fittest].fitness)
+  self.cars[fittest].fitness = 0
   
   -- for the best network, generate 2 mutated and 1 unmutated TODO
   self.networks[1] = helper.copyNetwork(oldNetworks[fittest])
@@ -148,11 +147,11 @@ function world:nextGen()
   
   -- for the rest, random mutations
   for i = 2, #oldNetworks/3 do
-  fittest = helper.findFittest(oldNetworks)
+  fittest = helper.findFittest(self.cars)
   self.networks[i*3-2] = helper.mutateNetwork(oldNetworks[fittest])
   self.networks[i*3-1] = helper.mutateNetwork(oldNetworks[fittest])
   self.networks[i*3] = helper.mutateNetwork(oldNetworks[fittest])
-  oldNetworks[fittest].fitness = 0
+  self.cars[fittest].fitness = 0
   end
 end
 --DRAW--

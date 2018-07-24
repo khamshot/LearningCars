@@ -1,4 +1,4 @@
-require "savethatshit"
+require "savemap"
 
 map = {
   walls = {},
@@ -52,8 +52,8 @@ function love.keypressed(key)
     text = "walls"
   end
   if key == "escape" then
-    if love.window.showMessageBox( "save", "Desch is jetzt in Temp/Roaming/Love") then
-      justSAVEIT(map.walls,map.checkpoints)
+    if love.window.showMessageBox( "save", "map is saved in Temp/Roaming/Love/LearningCars/maps/...") then
+      saveMap(map.walls,map.checkpoints)
       love.event.quit()
     end
   end
@@ -66,13 +66,13 @@ function love.keypressed(key)
   end
   
   if key == "a" then
-    offset.x = offset.x - 500
+    offset.x = offset.x - 300
   elseif key == "d" then
-    offset.x = offset.x + 500
+    offset.x = offset.x + 300
   elseif key == "w" then
-    offset.y = offset.y - 500
+    offset.y = offset.y - 300
   elseif key == "s" then
-    offset.y = offset.y + 500
+    offset.y = offset.y + 300
   end
 end
 
