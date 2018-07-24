@@ -15,14 +15,7 @@ function love.load()
   --settings.setScreenRes(1920,1080,{resizable=false,fullscreen=true})
   
   gamemode.setmode(false,false,true,true)
-  menu:setItems(require "menus/mainMenu")
-  
-  world:generateCars(9,840,750)
-  world:generateNetworks(9,400)
-  
-  local map = require "maps/map03"
-  world:setWalls(map.walls)
-  world:setCheckpoints(map.checkpoints)
+  menu:setMenu(require "menus/startMenu")
 end
 
 function love.update(dt)
@@ -49,8 +42,11 @@ function love.draw()
 end
 
 function love.keypressed(key)
-  if key == settings.keys.escape then
-    gamemode.setmode(not gamemode.world.update,true,not gamemode.menu.update,not gamemode.menu.draw)
+  if gamemode.world.update then
+    world:updateUI({key=key}) 
+  end
+  if gamemode.menu.update then
+    menu:update({key=key}) 
   end
 end
 

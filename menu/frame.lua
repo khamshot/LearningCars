@@ -26,7 +26,7 @@ end
 
 function frame:update(input)
   if type(self.exec) == "function" then
-    self.exec(self)
+    self.exec(self,input)
   end
 end
 

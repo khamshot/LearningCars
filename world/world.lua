@@ -4,7 +4,7 @@ world = {
   networks = {},
   walls = {},
   checkpoints = {},
-  ui = require "menus/ingameUI",
+  ui = require("menus/ingameUI").items,
   generation = 1}
 
 function world:setCars(cars)

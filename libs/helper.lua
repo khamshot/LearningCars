@@ -50,10 +50,10 @@ function helper.copyNetworks(networks)
   return copiedNetworks
 end
 
-function helper.findFittest(objects)
+function helper.findFittest(netwrk)
 -- finds the fittest network
   local value, key = 0,1
-  for i,v in ipairs(objects) do
+  for i,v in ipairs(netwrk) do
     if value < v.fitness then
       key = i
       value = v.fitness
@@ -63,7 +63,7 @@ function helper.findFittest(objects)
 end
 
 function helper.mutateNetwork(netwrk)
-  --mutates  given network
+-- mutates  given network
   local mutation = helper.copyNetwork(netwrk)
 
   for i = 1, math.random(math.floor(netwrk.hnodes/2)) do
@@ -88,4 +88,10 @@ function helper.mutateMatrix(matrix)
   elseif which == 3 then -- + [-0.5,+0.5]
     matrix[pos[1]][pos[2]] = matrix[pos[1]][pos[2]] + (math.random()-0.5)
   end
+end
+
+function helper.exportNetworks(filename,tbl)
+-- exports a set of networks -> improve on multiple maps
+  love.filesystem.createDirectory("networks")
+  love.filesystem.write("networks/" .. filename,serialize(tbl))
 end

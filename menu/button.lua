@@ -25,7 +25,7 @@ function button.new(init)
   self.txtOffset = init.txtOffset or {20,10}
   self.txtColor = init.txtColor or {255,255,255,255}
 
-  self.colorOffset = init.colorOffset or {255,0,255,255}
+  self.colorOffset = init.colorOffset or {255,255,255,255}
   self.txtColorOffset = init.txtColorOffset or {255,0,255,255}
   
   self.exec = init.exec
