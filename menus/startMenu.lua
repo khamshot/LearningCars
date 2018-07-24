@@ -34,4 +34,8 @@ table.insert(startMenu.items,button({x=1200,y=380,width=76,height=72,img=5,color
     love.event.quit() 
   end}))
 
+--- POPUPS ---
+
+-- add popups here --> popupEnable has to be active
+
 return startMenu

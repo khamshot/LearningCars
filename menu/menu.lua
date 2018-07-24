@@ -14,7 +14,7 @@ function menu:update(input)
   for i,v in ipairs(self.items) do
     v:update(input)
   end
-  if popupEnable then
+  if self.popupEnable then
       for i,v in ipairs(self.popupItems) do
         v:update(input)
       end
@@ -25,9 +25,9 @@ function menu:draw()
   for i,v in ipairs(self.items) do
     v:draw()
   end
-  if popupEnable then
+  if self.popupEnable then
       for i,v in ipairs(self.popupItems) do
-        v:update(input)
+        v:draw()
       end
   end
 end
