@@ -31,11 +31,22 @@ table.insert(startMenu.items,frame({x=810,y=650,width=0,height=0,
 
 table.insert(startMenu.items,button({x=1200,y=380,width=76,height=72,img=5,colorOffset={255,255,0,255},
   exec=function(self)
-    love.event.quit() 
+    menu.popupEnable = true
   end}))
 
 --- POPUPS ---
 
--- add popups here --> popupEnable has to be active
+table.insert(startMenu.popupItems,frame({x=770,y=420,width=380,height=300,img=2,color={255,255,255,255}}))
+table.insert(startMenu.popupItems,frame({x=790,y=440,width=340,height=160,img=3,color={255,255,255,255}}))
+table.insert(startMenu.popupItems,frame({x=810,y=440,width=380,height=300,txt="DO YOU REALLY",color={255,255,255,255}}))
+table.insert(startMenu.popupItems,frame({x=810,y=500,width=380,height=300,txt="WANT TO QUIT?",color={255,255,255,255}}))
+table.insert(startMenu.popupItems,button({x=790,y=625,width=160,height=72,img=4,txt="QUIT",txtOffset={40,3},txtColorOffset={255,0,0,255},
+  exec=function(self)
+    love.event.quit()
+  end}))
+table.insert(startMenu.popupItems,button({x=970,y=625,width=160,height=72,img=4,txt="CANCEL",txtOffset={25,3},txtColorOffset={255,0,0,255},
+  exec=function(self)
+    menu.popupEnable = false
+  end}))
 
 return startMenu

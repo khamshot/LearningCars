@@ -42,10 +42,13 @@ function love.draw()
 end
 
 function love.keypressed(key)
-  if gamemode.world.update then
+-- if done differently switching between states becomes inconsistent
+  if gamemode.world.update and gamemode.menu.update then
     world:updateUI({key=key}) 
-  end
-  if gamemode.menu.update then
+    menu:update({key=key}) 
+  elseif gamemode.world.update and not gamemode.menu.update then
+    world:updateUI({key=key}) 
+  elseif not gamemode.world.update and gamemode.menu.update then
     menu:update({key=key}) 
   end
 end

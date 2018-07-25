@@ -90,8 +90,23 @@ function helper.mutateMatrix(matrix)
   end
 end
 
-function helper.exportNetworks(filename,tbl)
+function helper.exportNetworks(filename,netwrks)
 -- exports a set of networks -> improve on multiple maps
+  local tbl = {}
+  for i,v in ipairs(netwrks) do
+    table.insert({wih=v.wih,who=v.who,inodes=v.inodes,hnodes=v.hnodes,onodes=v.onodes})
+  end
   love.filesystem.createDirectory("networks")
   love.filesystem.write("networks/" .. filename,serialize(tbl))
+end
+
+function helper.importNetworks(filename)
+-- import a set of networks -> improve on multiple maps  
+  local fileTable = require(filename)
+  local tbl = {}
+  for i,v in ipairs(fileTable) do
+    table.insert(tbl,network({inodes=v.inodes,hnodes=v.hnodes,onodes=v.onodes,wih=v.wih,who=v.who}))
+  end
+  
+  return tbl
 end
