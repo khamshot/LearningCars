@@ -1,3 +1,4 @@
+utf8 = require("utf8")
 require "libs/ser"
 require "libs/helper"
 require "settings"

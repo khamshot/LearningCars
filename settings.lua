@@ -4,7 +4,7 @@ settings = {
   scale = {x=1,y=1},
   uiScale = {x=1,y=1},
   fontsize = 45,
-  keys = {escape="escape"}}
+  keys = {escape="escape",enter="return",backspace="backspace"}}
 
 function settings.setScreenRes(width,height,flags)
 -- setting up the screen resolution and scaling factors
