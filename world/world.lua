@@ -154,6 +154,24 @@ function world:nextGen()
   self.cars[fittest].fitness = 0
   end
 end
+
+function world:clear()
+-- empty the world
+  self.generation = 1
+  for i,v in pairs(self.walls) do
+    self.walls[i] = nil
+  end
+  for i,v in pairs(self.checkpoints) do
+    self.checkpoints[i] = nil
+  end
+  for i,v in pairs(self.networks) do
+    self.networks[i] = nil
+  end
+  for i,v in pairs(self.cars) do
+    self.cars[i] = nil
+  end
+  self.focus = nil
+end
 --DRAW--
 
 function world:draw()

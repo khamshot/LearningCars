@@ -21,6 +21,13 @@ table.insert(pauseMenu.items,button({x=805,y=560,width=330,height=90,img=4,txtOf
     menu.popupEnable = 2
   end}))
 
+table.insert(pauseMenu.items,button({x=805,y=680,width=330,height=90,img=4,txtOffset={35,10},txt="MAIN MENU",txtColorOffset={255,0,0,255},
+  exec=function(self) 
+    world:clear()
+    gamemode.setmode(false,false,true,true) 
+    menu:setMenu(require "menus/startMenu")
+  end}))
+
 table.insert(pauseMenu.items,button({x=1200,y=380,width=76,height=72,img=5,colorOffset={255,255,0,255},
   exec=function(self)
     menu.popupEnable = 1

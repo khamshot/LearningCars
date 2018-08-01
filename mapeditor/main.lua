@@ -15,7 +15,7 @@ offset = {x=0, y=0}
 car = love.graphics.newImage("car1.png")
 
 function love.load()
-  love.filesystem.setIdentity("mapeditor")
+  love.filesystem.setIdentity("LearningCars")
   love.window.setMode(1920,1080,{fullscreen=false})
 end
 

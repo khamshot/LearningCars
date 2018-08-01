@@ -23,5 +23,6 @@ function saveMap(walls,checkpoints)
   data = data .. "\r\n"
   data = data .. "return map"
   
+  love.filesystem.createDirectory("maps")
   love.filesystem.write(filename,data)
 end

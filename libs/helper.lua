@@ -2,6 +2,16 @@ local network = require "world/neuralnetwork"
 
 helper = {}
 
+function helper.round(number,precision,floor)
+  number = number * math.pow(10,precision)
+  if floor then
+    number = math.floor(number)
+  else
+    number = math.ceil(number)
+  end
+  return number/math.pow(10,precision)
+end
+
 function helper.checkCol(x1,y1,w1,h1,x2,y2,w2,h2)
 -- rectangle collision check
   local x1w1, y1h1, x2w2, y2h2 = x1 + w1, y1 + h1, x2 + w2, y2 + h2
